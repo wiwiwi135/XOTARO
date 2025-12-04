@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOTARO TEAM | Software Development</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- General Reset & Fonts --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* --- LOADER STYLES --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        #loader.slide-up { transform: translateY(-100%); }
+        #intro-img {
+            width: 85%; max-width: 1000px; aspect-ratio: 16/9; object-fit: cover;
+            border-radius: 12px; opacity: 0; transition: opacity 2s ease-in-out;
+            box-shadow: 0 0 60px rgba(255,255,255,0.15);
+        }
+        .loader-bar-container {
+            margin-top: 40px; width: 50%; height: 4px; background-color: #222;
+            border-radius: 2px; overflow: hidden; display: none;
+        }
+        .loader-bar {
+            width: 0%; height: 100%; background-color: #fff;
+            box-shadow: 0 0 20px #fff; transition: width 5s linear;
+        }
+        .loading-text {
+            margin-top: 20px; font-size: 0.9rem; letter-spacing: 4px;
+            text-transform: uppercase; color: #fff; opacity: 0; transition: opacity 1s;
+        }
+
+        /* --- HEADER & NAV (SQUARES) --- */
+        header {
+            padding: 20px 40px;
+            position: absolute; width: 100%; top: 0; z-index: 100;
+            display: flex; justify-content: center; /* Center Nav */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+        }
+
+        nav ul {
+            display: flex; list-style: none; gap: 15px; flex-wrap: wrap; justify-content: center;
+        }
+
+        /* تصميم الأزرار المربعة في الناف */
+        nav a {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            /* جعلها مربعة */
+            border-radius: 4px; 
+        }
+
+        nav a:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* --- FLOATING LOGO (New Feature) --- */
+        #floating-logo-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #000;
+            border: 2px solid #fff;
+            border-radius: 12px; /* مربع بحواف ناعمة */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 9000; /* فوق كل العناصر */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        #floating-logo-btn img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        #floating-logo-btn:hover {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+            transform: scale(1.1);
+        }
+
+        /* أنيميشن عند الضغط */
+        .spin-animation {
+            animation: spin-click 0.6s ease-in-out;
+        }
+
+        @keyframes spin-click {
+            0% { transform: scale(1.1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(360deg); }
+        }
+
+        /* --- LAYOUT SYSTEM (Split Screen Logic) --- */
+        #main-content { opacity: 0; transition: opacity 1s ease; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center; /* Center Vertically */
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle at center, #111 0%, #000 90%);
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* DESKTOP SPLIT: Hero */
+        @media (min-width: 1024px) {
+            .hero-content {
+                flex-direction: row; /* Split horizontal */
+                justify-content: space-between;
+                text-align: left;
+                padding: 0 50px;
+            }
+            .hero-text { flex: 1; padding-right: 50px; border-right: 1px solid rgba(255,255,255,0.1); }
+            .hero-cta { flex: 1; display: flex; justify-content: center; align-items: center; padding-left: 50px; }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+
+        .hero p { font-size: 1.1rem; color: #aaa; margin-bottom: 30px; line-height: 1.6; }
+
+        .btn-large {
+            padding: 20px 60px;
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-large::before {
+            content: ''; position: absolute; top:0; left: -100%; width: 100%; height: 100%;
+            background: #fff; transition: 0.4s; z-index: -1;
+        }
+        .btn-large:hover { color: #000; box-shadow: 0 0 40px rgba(255,255,255,0.6); }
+        .btn-large:hover::before { left: 0; }
+
+        /* SECTIONS GENERAL */
+        section { padding: 80px 0; border-bottom: 1px solid #111; }
+
+        .section-split-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* DESKTOP SPLIT: Sections */
+        @media (min-width: 1024px) {
+            .section-split-layout {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 60px;
+            }
+            /* الجزء الأيسر (العنوان) يأخذ جزء */
+            .split-left { flex: 0.4; position: sticky; top: 100px; }
+            /* الجزء الأيمن (المحتوى) يأخذ الباقي */
+            .split-right { flex: 0.6; }
+            
+            .section-title { text-align: left; font-size: 3.5rem; line-height: 1.1; }
+            .section-desc { text-align: left; margin-top: 20px; color: #888; }
+        }
+
+        .section-title {
+            font-size: 2.5rem; text-transform: uppercase; letter-spacing: 4px;
+            font-weight: 800; margin-bottom: 10px;
+        }
+
+        /* CARDS & GRID */
+        .grid-container {
+            display: grid; grid-template-columns: 1fr; gap: 30px;
+        }
+        /* Mobile: 1 column. Desktop (inside split): still 1 or 2 depending on space */
+        @media (min-width: 768px) {
+            .grid-container { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .card {
+            background: #080808; border: 1px solid #222; padding: 30px; transition: 0.3s;
+        }
+        .card:hover { border-color: #fff; transform: translateY(-5px); }
+        .card h3 { font-size: 1.3rem; margin-bottom: 10px; font-weight: 700; }
+        .card p { color: #999; font-size: 0.9rem; }
+
+        /* PROJECTS (Gear) */
+        .under-developing-wrapper {
+            background: #050505; border: 1px solid #222; padding: 80px;
+            text-align: center; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: relative;
+            overflow: hidden; grid-column: 1 / -1;
+        }
+        .gear-icon {
+            font-size: 5rem; color: #fff; margin-bottom: 20px;
+            animation: spin 6s linear infinite; text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .developing-text { font-size: 1.5rem; letter-spacing: 4px; font-weight: 800; }
+
+        /* TEAM (Neon Box) */
+        .team-member {
+            background: #000; padding: 30px; border: 2px solid #fff;
+            text-align: center; transition: 0.3s;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2), inset 0 0 10px rgba(255,255,255,0.1);
+        }
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(255,255,255,0.7), inset 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        /* CONTACT & FOOTER */
+        .contact-wrapper { text-align: center; }
+        .social-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 15px 40px; border: 2px solid #1877f2;
+            color: #fff; text-decoration: none; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        .social-btn:hover { background: #1877f2; box-shadow: 0 0 30px rgba(24, 119, 242, 0.6); }
+
+        footer {
+            text-align: center; padding: 60px 20px 0; background: #000;
+            border-top: 1px solid #222; position: relative;
+        }
+        .footer-socials a {
+            color: #fff; font-size: 1.5rem; transition: 0.3s;
+        }
+        .footer-socials a:hover { color: #1877f2; text-shadow: 0 0 20px #1877f2; }
+        
+        .bottom-image-wrapper {
+            margin-top: 40px; display: flex; justify-content: center; padding-bottom: 40px;
+        }
+        .bottom-intro-img {
+            width: 90%; max-width: 1200px; aspect-ratio: 16/9; object-fit: cover;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+            opacity: 0.6; transition: 0.5s;
+        }
+        .bottom-intro-img:hover { opacity: 1; }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* RESPONSIVE TWEAKS */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            header { padding: 15px; }
+            nav a { padding: 8px 15px; font-size: 0.75rem; }
+            #floating-logo-btn { width: 50px; height: 50px; bottom: 20px; right: 20px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <img src="intro.png" alt="Intro" id="intro-img">
+        <div class="loading-text" id="loading-txt">INITIALIZING XOTARO SYSTEM...</div>
+        <div class="loader-bar-container" id="bar-container">
+            <div class="loader-bar" id="bar"></div>
+        </div>
+    </div>
+
+    <div id="floating-logo-btn" onclick="animateLogo()">
+        <img src="logo.png" alt="XOTARO">
+    </div>
+
+    <div id="main-content">
+        
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text reveal">
+                        <h1>We Build<br>The Future</h1>
+                        <p>XOTARO TEAM: Transforming ideas into powerful software solutions.</p>
+                    </div>
+                    <div class="hero-cta reveal">
+                        <button class="btn-large" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
+                            Show Our Projects
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="container">
+                <div class="section-split-layout">
+                    <div class="split-left reveal">
+                        <h2 class="section-title">Who<br>We Are</h2>
+                        <p class="section-desc">We are a passionate team of developers dedicated to excellence.</p>
+                    </div>
+                    <div class="split-right reveal">
+                        <div class="grid-container">
+                            <div class="card">
+                                <h3>Our Mission</h3>
+                                <p>Delivering high-quality, scalable solutions that solve real problems.</p>
+                            </div>
+                            <div class="card">
+                                <h3>Our Style</h3>
+                                <p>Clean code, modern architecture, and user-centric neon designs.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <div class="container">
+                <div class="section-split-layout">
+                    <div class="split-left reveal">
+                        <h2 class="section-title">Our<br>Work</h2>
+                        <p class="section-desc">Innovations currently in the pipeline.</p>
+                    </div>
+                    <div class="split-right reveal">
+                        <div class="under-developing-wrapper">
+                            <i class="fa-solid fa-gear gear-icon"></i>
+                            <h3 class="developing-text">Under Developing...</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="team">
+            <div class="container">
+                <div class="section-split-layout">
+                    <div class="split-left reveal">
+                        <h2 class="section-title">The<br>Team</h2>
+                        <p class="section-desc">The minds behind the code.</p>
+                    </div>
+                    <div class="split-right reveal">
+                        <div class="grid-container">
+                            <div class="team-member">
+                                <h3>Mohamed M.Hamdy</h3>
+                                <p>Team Leader & Backend</p>
+                            </div>
+                            <div class="team-member">
+                                <h3>Yassin El.shereef</h3>
+                                <p>Frontend Developer</p>
+                            </div>
+                            <div class="team-member">
+                                <h3>Anonymous</h3>
+                                <p>UI/UX Designer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <div class="section-split-layout" style="align-items: center;">
+                    <div class="split-left reveal">
+                        <h2 class="section-title">Get In<br>Touch</h2>
+                    </div>
+                    <div class="split-right reveal" style="text-align: center; width: 100%;">
+                        <div class="contact-wrapper">
+                            <p style="font-size: 1.5rem; margin-bottom: 20px; color: #ccc;">Ready to start?</p>
+                            <a href="https://www.facebook.com/share/17U1FC281u/" target="_blank" class="social-btn">
+                                <i class="fab fa-facebook-f"></i> Message Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-rights">
+                <p>&copy; <span id="current-year"></span> XOTARO TEAM.</p>
+            </div>
+            
+            <div class="footer-socials">
+                <a href="https://www.facebook.com/share/17U1FC281u/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            </div>
+
+            <div class="bottom-image-wrapper">
+                <img src="intro.png" alt="XOTARO Vision" class="bottom-intro-img">
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- ANIMATE FLOATING LOGO ---
+        function animateLogo() {
+            const btn = document.getElementById('floating-logo-btn');
+            btn.classList.add('spin-animation');
+            // Remove class after animation ends to allow re-triggering
+            setTimeout(() => {
+                btn.classList.remove('spin-animation');
+                // Optional: Scroll to top on click
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 600);
+        }
+
+        // --- LOADER ---
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        window.addEventListener('load', () => {
+            const img = document.getElementById('intro-img');
+            const barContainer = document.getElementById('bar-container');
+            const bar = document.getElementById('bar');
+            const txt = document.getElementById('loading-txt');
+            const loader = document.getElementById('loader');
+            const mainContent = document.getElementById('main-content');
+
+            setTimeout(() => { img.style.opacity = '1'; }, 500);
+            setTimeout(() => {
+                barContainer.style.display = 'block';
+                txt.style.opacity = '1';
+                void bar.offsetWidth;
+                bar.style.width = '100%';
+            }, 2000);
+            setTimeout(() => {
+                loader.classList.add('slide-up');
+                mainContent.style.opacity = '1';
+                setTimeout(() => { loader.style.display = 'none'; }, 1500);
+            }, 7500);
+        });
+
+        // --- SCROLL REVEAL ---
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 80;
+            reveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+    </script>
+</body>
+</html>
