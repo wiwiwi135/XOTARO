@@ -6,146 +6,179 @@
     <title>XOTARO TEAM</title>
     
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="https://i.ibb.co/Y4xSMSb3/logo.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/Y4xSMSb3/logo.png">
     <meta name="theme-color" content="#000000">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. RESET --- */
+        /* --- 1. CORE STYLES --- */
+        :root { --primary: #1877f2; --dark: #050505; --card-bg: #0a0a0a; --text: #e0e0e0; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background-color: #000; color: #fff; overflow-x: hidden; 
+            background-color: #000; color: var(--text); overflow-x: hidden; 
             font-family: 'Montserrat', sans-serif;
         }
-        /* Arabic Mode Class */
         body.rtl { direction: rtl; font-family: 'Tajawal', sans-serif; }
         
-        html { scroll-behavior: smooth; }
-        
-        /* منع خروج النصوص */
-        h1, h2, h3, p { word-wrap: break-word; overflow-wrap: break-word; text-align: center; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* --- 2. LOADER (FORCED) --- */
+        h1, h2, h3 { color: #fff; line-height: 1.2; text-transform: uppercase; letter-spacing: 1px; }
+        p { color: #aaa; line-height: 1.8; font-size: 1rem; margin-bottom: 20px; }
+        
+        /* Container */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+
+        /* --- 2. LOADER --- */
         #loader-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background-color: #000; z-index: 99999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 0.5s ease, visibility 0.5s;
         }
-        
         .loader-frame {
-            width: 80%; max-width: 400px; aspect-ratio: 16/9;
-            border: 1px solid #333; border-radius: 10px;
+            width: 90%; max-width: 500px; aspect-ratio: 16/9;
+            border: 1px solid #222; border-radius: 12px;
             display: flex; justify-content: center; align-items: center;
-            background: #050505; margin-bottom: 20px; overflow: hidden;
+            background: var(--dark); margin-bottom: 25px; overflow: hidden;
+            box-shadow: 0 0 50px rgba(24, 119, 242, 0.1);
         }
-        #intro-img-loader { width: 100%; height: 100%; object-fit: cover; }
+        #intro-img-loader { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 1s; }
+        .loading-info { width: 90%; max-width: 500px; }
+        .progress-track { width: 100%; height: 3px; background: #222; border-radius: 2px; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 15px #fff; transition: width 0.1s linear; }
+        .progress-percent { text-align: right; margin-top: 8px; font-size: 0.8rem; font-weight: bold; color: #fff; }
 
-        .loading-info { width: 80%; max-width: 400px; }
-        .progress-track { width: 100%; height: 4px; background: #222; border-radius: 2px; }
-        .progress-bar { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; transition: width 0.1s linear; }
-        .progress-percent { text-align: center; margin-top: 5px; font-size: 0.8rem; color: #888; }
-
-        /* --- 3. MAIN SITE --- */
-        #main-site { display: none; opacity: 0; transition: opacity 1s ease; }
-        
-        /* Header */
+        /* --- 3. HEADER --- */
         header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; z-index: 1000;
-            background: rgba(0,0,0,0.95); border-bottom: 1px solid #222;
-        }
-        
-        .logo-area { display: flex; align-items: center; gap: 10px; }
-        .header-logo { width: 35px; height: 35px; object-fit: contain; }
-        .brand { font-weight: 900; font-size: 1.1rem; }
-
-        .controls { display: flex; gap: 10px; align-items: center; }
-        .icon-btn {
-            background: transparent; border: 1px solid #333; color: #fff;
-            width: 35px; height: 35px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
-            font-size: 0.9rem;
-        }
-        
-        /* Language Btn */
-        .lang-btn { font-weight: bold; font-family: sans-serif; font-size: 0.8rem; width: auto; padding: 0 10px; border-radius: 20px; }
-
-        /* Install Btn (Center Highlight) */
-        #install-btn { 
-            border-color: #1877f2; color: #1877f2; display: none; /* يظهر بالجافاسكريبت */
-        } 
-
-        /* Hero */
-        .hero {
-            min-height: 100vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center;
-            padding: 100px 20px;
-            background: radial-gradient(circle, #151515 0%, #000 100%);
-        }
-        .hero h1 { font-size: 2.2rem; text-transform: uppercase; margin-bottom: 15px; line-height: 1.2; }
-        .hero p { color: #aaa; max-width: 600px; margin-bottom: 30px; font-size: 0.95rem; }
-        
-        .btn-main {
-            padding: 12px 30px; background: transparent; border: 2px solid #fff; color: #fff;
-            font-weight: bold; text-transform: uppercase; cursor: pointer; letter-spacing: 1px;
+            padding: 0 40px; z-index: 1000;
+            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             transition: 0.3s;
         }
-        .btn-main:hover { background: #fff; color: #000; }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .header-logo { width: 45px; height: 45px; object-fit: contain; }
+        .brand { font-weight: 900; font-size: 1.4rem; letter-spacing: 2px; }
 
-        /* Sections */
-        section { padding: 60px 20px; border-bottom: 1px solid #111; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        .sec-title { font-size: 1.8rem; margin-bottom: 30px; text-transform: uppercase; text-align: center; color: #fff; }
+        .controls { display: flex; gap: 12px; align-items: center; }
+        .icon-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid #333; color: #fff;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .icon-btn:hover { background: #fff; color: #000; transform: scale(1.1); }
+        .lang-btn { font-size: 0.8rem; font-weight: bold; width: auto; padding: 0 15px; border-radius: 30px; }
+        
+        /* زر التحميل يظهر دائماً */
+        #install-btn { border-color: var(--primary); color: var(--primary); display: flex; }
+        #install-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 0 20px var(--primary); }
 
-        /* Grid */
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #080808; border: 1px solid #222; padding: 25px; text-align: center; border-radius: 8px; }
-        .card h3 { font-size: 1.1rem; margin-bottom: 10px; color: #fff; }
-        .card p { color: #888; font-size: 0.9rem; }
+        /* --- 4. HERO SECTION --- */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; position: relative;
+            background: radial-gradient(circle at 70% 30%, #1a1a1a 0%, #000 70%);
+            overflow: hidden;
+        }
+        .hero-content { width: 100%; z-index: 2; text-align: center; padding-top: 60px; }
+        
+        .hero h1 { font-size: 4rem; font-weight: 900; margin-bottom: 20px; }
+        .typing-cursor { border-right: 4px solid var(--primary); animation: blinkCursor 0.8s infinite; }
+        @keyframes blinkCursor { 0%,100% { border-color: transparent } 50% { border-color: var(--primary) } }
 
-        /* Dev Zone */
-        .dev-box { background: #080808; padding: 40px 20px; text-align: center; border: 1px solid #222; border-radius: 10px; }
-        .gear-spin { font-size: 3rem; margin-bottom: 20px; animation: spin 4s infinite linear; color: #555; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .hero p { max-width: 800px; margin: 0 auto 40px; font-size: 1.2rem; color: #ccc; }
+        
+        .btn-main {
+            padding: 18px 50px; background: transparent; border: 2px solid #fff; color: #fff;
+            font-weight: 800; text-transform: uppercase; cursor: pointer; letter-spacing: 2px;
+            transition: 0.4s;
+        }
+        .btn-main:hover { color: #000; background: #fff; box-shadow: 0 0 30px rgba(255,255,255,0.4); }
 
+        /* --- 5. SECTIONS & CONTENT --- */
+        section { padding: 120px 0; border-bottom: 1px solid #111; }
+        .sec-header { text-align: center; margin-bottom: 70px; }
+        .sec-header h2 { font-size: 3rem; margin-bottom: 20px; position: relative; display: inline-block; }
+        .sec-header p { max-width: 700px; margin: 0 auto; font-size: 1.1rem; }
+
+        /* Grid System */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+
+        .card {
+            background: var(--card-bg); border: 1px solid #222; padding: 40px 30px;
+            border-radius: 15px; transition: 0.4s; position: relative; overflow: hidden;
+            text-align: center;
+        }
+        .card:hover { transform: translateY(-10px); border-color: #444; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        .card i { font-size: 3rem; color: var(--primary); margin-bottom: 25px; }
+        .card h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        
+        /* Stats */
+        .stats-section { background: #0a0a0a; padding: 60px 0; border-bottom: 1px solid #222; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; }
+        .stat-item h3 { font-size: 3rem; color: #fff; margin-bottom: 5px; }
+
+        /* Projects (Future Plans) */
+        .dev-box {
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            border: 1px solid #333; padding: 60px; text-align: center; border-radius: 20px;
+        }
+        .features-list { list-style: none; padding: 0; margin-top: 30px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .features-list li { background: #111; padding: 10px 20px; border-radius: 30px; border: 1px solid #333; color: #aaa; }
+        .gear-spin { font-size: 4rem; margin-bottom: 20px; animation: spin 4s infinite linear; color: #fff; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
         /* Footer */
-        footer { padding: 60px 20px 20px; background: #000; text-align: center; position: relative; overflow: hidden; }
+        footer { padding: 80px 0 30px; background: #020202; position: relative; text-align: center; overflow: hidden; }
         .footer-bg {
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            height: 100%; width: 100%; object-fit: cover; opacity: 0.1; z-index: 0;
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.1; z-index: 0;
+            mask-image: linear-gradient(to top, black, transparent);
         }
         .footer-content { position: relative; z-index: 2; }
-        .social-btn {
-            display: inline-block; padding: 10px 25px; background: #1877f2; color: #fff;
-            text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0;
+        .social-links a {
+            display: inline-flex; width: 50px; height: 50px; background: #111; color: #fff;
+            border-radius: 50%; align-items: center; justify-content: center; margin: 0 10px;
+            font-size: 1.2rem; transition: 0.3s; text-decoration: none; border: 1px solid #333;
         }
-        .copy { color: #444; font-size: 0.8rem; margin-top: 30px; }
+        .social-links a:hover { background: var(--primary); transform: translateY(-5px); }
 
+        /* Mobile Responsive */
+        @media (max-width: 1024px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .grid-3, .grid-2, .stats-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+            header { padding: 0 20px; }
+            .sec-header h2 { font-size: 2rem; }
+        }
+
+        /* Animation Class */
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body data-lang="en">
 
-    <audio id="bg-music" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_13a3627063.mp3?filename=soft-piano-10723.mp3" type="audio/mpeg">
-    </audio>
-
     <div id="loader-screen">
         <div class="loader-frame">
-            <img src="https://i.ibb.co/vx3Ddy6y/intro.jpg" id="intro-img-loader" alt="Loading">
+            <img src="https://i.ibb.co/vx3Ddy6y/intro.jpg" id="intro-img-loader" onload="this.style.opacity='1'">
         </div>
         <div class="loading-info">
-            <div class="progress-track">
-                <div class="progress-bar" id="bar"></div>
-            </div>
+            <div class="progress-track"><div class="progress-bar" id="bar"></div></div>
             <div class="progress-percent" id="percent">0%</div>
         </div>
     </div>
 
     <div id="main-site">
+        
         <header>
             <div class="logo-area">
                 <img src="https://i.ibb.co/Y4xSMSb3/logo.png" class="header-logo" alt="X">
@@ -153,37 +186,79 @@
             </div>
             
             <div class="controls">
-                <button class="icon-btn" id="install-btn" onclick="installApp()">
+                <button class="icon-btn" id="install-btn" onclick="installApp()" title="Download App">
                     <i class="fas fa-download"></i>
                 </button>
-                
                 <button class="icon-btn lang-btn" onclick="toggleLang()">AR</button>
-                
-                <button class="icon-btn" id="music-btn" onclick="toggleMusic()">
-                    <i class="fas fa-volume-mute"></i>
-                </button>
             </div>
         </header>
 
         <section class="hero">
-            <div class="container">
-                <h1 id="txt-hero-title">WE ENGINEER<br>DIGITAL LEGACIES</h1>
-                <p id="txt-hero-desc">XOTARO TEAM: Architects of the virtual world. Blending code with art.</p>
-                <button class="btn-main" id="txt-hero-btn">EXPLORE UNIVERSE</button>
+            <div class="container hero-content">
+                <h1 id="txt-hero-title">WE ENGINEER <br><span style="color: var(--primary);">DIGITAL FUTURE</span><span class="typing-cursor"></span></h1>
+                <p id="txt-hero-desc">XOTARO TEAM: A collective of elite developers crafting the next generation of web experiences. We don't just write code; we build legacies.</p>
+                <button class="btn-main" id="txt-hero-btn" onclick="document.getElementById('services').scrollIntoView()">Explore Universe</button>
             </div>
         </section>
 
+        <div class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item"><h3>10+</h3><p>Projects</p></div>
+                    <div class="stat-item"><h3>100%</h3><p>Success</p></div>
+                    <div class="stat-item"><h3>24/7</h3><p>Support</p></div>
+                    <div class="stat-item"><h3>∞</h3><p>Code Lines</p></div>
+                </div>
+            </div>
+        </div>
+
         <section id="about">
             <div class="container">
-                <h2 class="sec-title" id="txt-about-title">WHO WE ARE</h2>
-                <div class="grid-2">
-                    <div class="card">
-                        <h3 id="txt-philosophy-title">Philosophy</h3>
-                        <p id="txt-philosophy-desc">Clean Code & Agile Methodologies. Optimized for performance and security.</p>
+                <div class="sec-header reveal">
+                    <h2 id="txt-about-title">WHO WE ARE</h2>
+                    <p id="txt-about-desc">More than just a team, we are a digital powerhouse committed to excellence, innovation, and precision in every pixel.</p>
+                </div>
+                <div class="grid-3">
+                    <div class="card reveal">
+                        <i class="fas fa-code"></i>
+                        <h3 id="txt-phil-title">Clean Philosophy</h3>
+                        <p id="txt-phil-desc">We believe that great software starts with clean code. We follow strict Agile methodologies to ensure every project is scalable.</p>
                     </div>
-                    <div class="card">
-                        <h3 id="txt-tech-title">Tech Stack</h3>
-                        <p id="txt-tech-desc">Complex Backend architectures & stunning Frontend interfaces.</p>
+                    <div class="card reveal">
+                        <i class="fas fa-rocket"></i>
+                        <h3 id="txt-inno-title">Innovation First</h3>
+                        <p id="txt-inno-desc">We don't follow trends; we set them. Our team is constantly researching AI integration and Cloud Native solutions.</p>
+                    </div>
+                    <div class="card reveal">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3 id="txt-sec-title">Robust Security</h3>
+                        <p id="txt-sec-desc">Security is not an afterthought. We implement industry-standard protocols to ensure your data remains safe.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" style="background: #080808;">
+            <div class="container">
+                <div class="sec-header reveal">
+                    <h2 id="txt-serv-title">OUR EXPERTISE</h2>
+                    <p id="txt-serv-desc">Comprehensive digital solutions tailored to elevate your business.</p>
+                </div>
+                <div class="grid-3">
+                    <div class="card reveal">
+                        <i class="fas fa-laptop-code"></i>
+                        <h3>Web Development</h3>
+                        <p>Full-stack development using React, Vue, Node.js. Fast, responsive, and SEO-friendly websites.</p>
+                    </div>
+                    <div class="card reveal">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Mobile Apps</h3>
+                        <p>Cross-platform mobile applications that provide native-like performance on iOS and Android.</p>
+                    </div>
+                    <div class="card reveal">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>UI/UX Design</h3>
+                        <p>Designing intuitive interfaces that users love. We focus on user journey and visual impact.</p>
                     </div>
                 </div>
             </div>
@@ -191,26 +266,40 @@
 
         <section id="projects">
             <div class="container">
-                <h2 class="sec-title" id="txt-work-title">OUR WORK</h2>
-                <div class="dev-box">
+                <div class="sec-header reveal">
+                    <h2 id="txt-work-title">FUTURE HORIZONS</h2>
+                </div>
+                <div class="dev-box reveal">
                     <i class="fas fa-cog gear-spin"></i>
                     <h3 id="txt-dev-title">SYSTEM UNDER DEVELOPMENT...</h3>
-                    <p id="txt-dev-desc">Crafting the next generation tools. Stay tuned.</p>
+                    <p id="txt-dev-desc" style="max-width: 600px; margin: 20px auto;">Our R&D team is currently crafting a revolutionary platform. Here is what we are cooking:</p>
+                    <ul class="features-list">
+                        <li>AI Analytics</li>
+                        <li>Cloud Sync</li>
+                        <li>Blockchain Auth</li>
+                        <li>Real-time Chat</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
         <section id="team">
             <div class="container">
-                <h2 class="sec-title" id="txt-team-title">THE ELITE</h2>
-                <div class="grid-2">
-                    <div class="card">
+                <div class="sec-header reveal">
+                    <h2 id="txt-team-title">THE ELITE SQUAD</h2>
+                </div>
+                <div class="grid-2" style="max-width: 800px; margin: 0 auto;">
+                    <div class="card reveal">
+                        <div style="width:80px; height:80px; background:#222; border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:bold;">M</div>
                         <h3>Mohamed M.Hamdy</h3>
-                        <p id="txt-role-1">Team Leader & Backend</p>
+                        <p style="color: var(--primary);">Team Leader & Backend</p>
+                        <p>Strategic mind ensuring robust server-side architecture.</p>
                     </div>
-                    <div class="card">
+                    <div class="card reveal">
+                        <div style="width:80px; height:80px; background:#222; border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:bold;">Y</div>
                         <h3>Yassin El.shereef</h3>
-                        <p id="txt-role-2">Frontend Developer</p>
+                        <p style="color: var(--primary);">Frontend & UI/UX</p>
+                        <p>Creative force crafting intuitive user experiences.</p>
                     </div>
                 </div>
             </div>
@@ -218,59 +307,64 @@
 
         <footer>
             <img src="https://i.ibb.co/vx3Ddy6y/intro.jpg" class="footer-bg" alt="">
-            <div class="footer-content">
-                <h3 id="txt-footer-title">CONNECT WITH US</h3>
-                <p style="margin: 10px 0;" id="txt-footer-desc">Ready to start your next project?</p>
-                <a href="https://www.facebook.com/share/17U1FC281u/" target="_blank" class="social-btn">
-                    <i class="fab fa-facebook-f"></i> FACEBOOK
-                </a>
-                <div class="copy">&copy; 2025 XOTARO TEAM.</div>
+            <div class="container footer-content">
+                <img src="https://i.ibb.co/Y4xSMSb3/logo.png" alt="X" class="footer-logo" style="width: 60px; margin-bottom: 20px;">
+                <h3>XOTARO TEAM</h3>
+                <p>Innovating today for a better tomorrow.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/share/17U1FC281u/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="copy" style="margin-top: 40px; color: #555;">&copy; 2025 XOTARO TEAM. All Rights Reserved.</div>
             </div>
         </footer>
+
     </div>
 
     <script>
         // --- TRANSLATIONS ---
         const translations = {
             en: {
-                heroTitle: "WE ENGINEER<br>DIGITAL LEGACIES",
-                heroDesc: "XOTARO TEAM: Architects of the virtual world. Blending code with art.",
+                heroTitle: "WE ENGINEER <br><span style='color: #1877f2;'>DIGITAL FUTURE</span>",
+                heroDesc: "We are XOTARO TEAM. A collective of elite developers crafting the next generation of web experiences.",
                 heroBtn: "EXPLORE UNIVERSE",
                 aboutTitle: "WHO WE ARE",
-                philTitle: "Philosophy",
-                philDesc: "Clean Code & Agile Methodologies. Optimized for performance and security.",
-                techTitle: "Tech Stack",
-                techDesc: "Complex Backend architectures & stunning Frontend interfaces.",
-                workTitle: "OUR WORK",
+                aboutDesc: "More than just a team, we are a digital powerhouse committed to excellence.",
+                philTitle: "Clean Philosophy",
+                philDesc: "We believe in Clean Code. Optimized for performance.",
+                innoTitle: "Innovation First",
+                innoDesc: "AI integration and Cloud Native solutions.",
+                secTitle: "Robust Security",
+                secDesc: "Industry-standard protocols to ensure safety.",
+                servTitle: "OUR EXPERTISE",
+                servDesc: "Comprehensive digital solutions.",
+                workTitle: "FUTURE HORIZONS",
                 devTitle: "SYSTEM UNDER DEVELOPMENT...",
-                devDesc: "Crafting the next generation tools. Stay tuned.",
-                teamTitle: "THE ELITE",
-                role1: "Team Leader & Backend",
-                role2: "Frontend Developer",
-                footerTitle: "CONNECT WITH US",
-                footerDesc: "Ready to start your next project?"
+                devDesc: "Our R&D team is currently crafting a revolutionary platform. Features:",
+                teamTitle: "THE ELITE SQUAD"
             },
             ar: {
-                heroTitle: "نحن نهندس<br>الإرث الرقمي",
-                heroDesc: "فريق XOTARO: مهندسو العالم الافتراضي. نمزج الكود بالفن.",
+                heroTitle: "نحن نهندس <br><span style='color: #1877f2;'>المستقبل الرقمي</span>",
+                heroDesc: "فريق XOTARO: نخبة من المطورين نصوغ الجيل القادم من تجارب الويب.",
                 heroBtn: "استكشف العالم",
                 aboutTitle: "من نحن",
-                philTitle: "فلسفتنا",
-                philDesc: "كود نظيف ومنهجيات رشيقة. تحسين الأداء والأمان.",
-                techTitle: "التقنيات",
-                techDesc: "هيكلة خلفية معقدة وواجهات أمامية مذهلة.",
-                workTitle: "أعمالنا",
+                aboutDesc: "أكثر من مجرد فريق، نحن قوة رقمية ملتزمة بالتميز والابتكار.",
+                philTitle: "فلسفة نظيفة",
+                philDesc: "نؤمن بالكود النظيف. تحسين الأداء هو أولويتنا.",
+                innoTitle: "الابتكار أولاً",
+                innoDesc: "دمج الذكاء الاصطناعي والحلول السحابية.",
+                secTitle: "حماية قوية",
+                secDesc: "نطبق أعلى معايير البروتوكولات العالمية.",
+                servTitle: "خبراتنا",
+                servDesc: "حلول رقمية شاملة للارتقاء بأعمالك.",
+                workTitle: "آفاق المستقبل",
                 devTitle: "النظام قيد التطوير...",
-                devDesc: "نقوم بصياغة أدوات الجيل القادم. ترقبونا.",
-                teamTitle: "النخبة",
-                role1: "قائد الفريق ومطور Backend",
-                role2: "مطور Frontend",
-                footerTitle: "تواصل معنا",
-                footerDesc: "جاهز لبدء مشروعك القادم؟"
+                devDesc: "فريق البحث يعمل حالياً على منصة ثورية. المميزات:",
+                teamTitle: "فريق النخبة"
             }
         };
 
-        // --- LANGUAGE TOGGLE ---
         let currentLang = 'en';
         function toggleLang() {
             const body = document.body;
@@ -291,25 +385,28 @@
 
         function applyLang(lang) {
             const t = translations[lang];
-            document.getElementById('txt-hero-title').innerHTML = t.heroTitle;
-            document.getElementById('txt-hero-desc').innerText = t.heroDesc;
-            document.getElementById('txt-hero-btn').innerText = t.heroBtn;
-            document.getElementById('txt-about-title').innerText = t.aboutTitle;
-            document.getElementById('txt-philosophy-title').innerText = t.philTitle;
-            document.getElementById('txt-philosophy-desc').innerText = t.philDesc;
-            document.getElementById('txt-tech-title').innerText = t.techTitle;
-            document.getElementById('txt-tech-desc').innerText = t.techDesc;
-            document.getElementById('txt-work-title').innerText = t.workTitle;
-            document.getElementById('txt-dev-title').innerText = t.devTitle;
-            document.getElementById('txt-dev-desc').innerText = t.devDesc;
-            document.getElementById('txt-team-title').innerText = t.teamTitle;
-            document.getElementById('txt-role-1').innerText = t.role1;
-            document.getElementById('txt-role-2').innerText = t.role2;
-            document.getElementById('txt-footer-title').innerText = t.footerTitle;
-            document.getElementById('txt-footer-desc').innerText = t.footerDesc;
+            const setText = (id, txt) => { const el = document.getElementById(id); if(el) el.innerHTML = txt; };
+            // Simple mapping for demo
+            setText('txt-hero-title', t.heroTitle);
+            setText('txt-hero-desc', t.heroDesc);
+            setText('txt-hero-btn', t.heroBtn);
+            setText('txt-about-title', t.aboutTitle);
+            setText('txt-about-desc', t.aboutDesc);
+            setText('txt-phil-title', t.philTitle);
+            setText('txt-phil-desc', t.philDesc);
+            setText('txt-inno-title', t.innoTitle);
+            setText('txt-inno-desc', t.innoDesc);
+            setText('txt-sec-title', t.secTitle);
+            setText('txt-sec-desc', t.secDesc);
+            setText('txt-serv-title', t.servTitle);
+            setText('txt-serv-desc', t.servDesc);
+            setText('txt-work-title', t.workTitle);
+            setText('txt-dev-title', t.devTitle);
+            setText('txt-dev-desc', t.devDesc);
+            setText('txt-team-title', t.teamTitle);
         }
 
-        // --- LOADER ---
+        // --- LOADER (FORCED TIMER) ---
         const loaderScreen = document.getElementById('loader-screen');
         const mainSite = document.getElementById('main-site');
         const bar = document.getElementById('bar');
@@ -317,83 +414,78 @@
         
         let width = 0;
         const timer = setInterval(() => {
+            width += 2; // سرعة متوسطة
+            if(bar) bar.style.width = width + '%';
+            if(percentTxt) percentTxt.innerText = width + '%';
+
             if (width >= 100) {
                 clearInterval(timer);
                 openSite();
-            } else {
-                width++;
-                bar.style.width = width + '%';
-                percentTxt.innerText = width + '%';
             }
-        }, 30); // أسرع قليلاً (3 ثواني)
+        }, 30); 
 
         function openSite() {
-            loaderScreen.style.opacity = '0';
-            loaderScreen.style.visibility = 'hidden';
-            mainSite.style.display = 'block';
-            setTimeout(() => {
-                mainSite.style.opacity = '1';
-                toggleMusic(true);
-            }, 100);
-        }
-
-        // --- MUSIC ---
-        const music = document.getElementById('bg-music');
-        const musicBtn = document.getElementById('music-btn');
-        let isPlaying = false;
-
-        function toggleMusic(auto = false) {
-            if (auto) {
-                music.play().then(() => {
-                    isPlaying = true;
-                    musicBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    musicBtn.style.borderColor = '#fff';
-                }).catch(() => {});
-            } else {
-                if (isPlaying) {
-                    music.pause();
-                    musicBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                } else {
-                    music.play();
-                    musicBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                }
-                isPlaying = !isPlaying;
+            if(loaderScreen) {
+                loaderScreen.style.opacity = '0';
+                loaderScreen.style.visibility = 'hidden';
+            }
+            if(mainSite) {
+                mainSite.style.display = 'block';
+                setTimeout(() => { mainSite.style.opacity = '1'; }, 100);
             }
         }
 
-        // --- PWA SIMULATION ---
-        function installApp() {
-            const btn = document.getElementById('install-btn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            setTimeout(() => {
-                btn.style.display = 'none';
-                alert("App Installed (Simulation)");
-            }, 2000);
-        }
-
-        // --- PWA REAL ---
+        // --- PWA LOGIC + SIMULATION ---
         let deferredPrompt;
         const installBtn = document.getElementById('install-btn');
+
+        // محاولة تسجيل السيرفس وركر
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installBtn.style.display = 'flex'; // يظهر فقط لو متاح
-        });
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') installBtn.style.display = 'none';
-                deferredPrompt = null;
-            } else {
-                installApp(); // Fallback to simulation
-            }
+            // الزرار موجود أصلاً بس بنحدث المتغير
         });
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js');
+        function installApp() {
+            if (deferredPrompt) {
+                // لو المتصفح بيدعم، طلع الرسالة الحقيقية
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // لو مفيش دعم (Simulation) عشان تشوفه شغال
+                const icon = installBtn.querySelector('i');
+                icon.className = 'fas fa-spinner fa-spin'; // Loading icon
+                setTimeout(() => {
+                    alert('App Installed Successfully (Simulation)!');
+                    installBtn.style.display = 'none';
+                }, 1500);
+            }
         }
+
+        // --- SCROLL ANIMATION ---
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        });
+        
+        document.querySelectorAll('section, .card').forEach(el => {
+            el.classList.add('reveal');
+            observer.observe(el);
+        });
+
     </script>
 </body>
-    </html>
-    
+</html>
