@@ -1,49 +1,23 @@
-const CACHE_NAME = 'xotaro-v1';
-// قائمة الملفات اللي هتتحفظ عشان تشتغل أوفلاين
-// ملاحظة: يفضل تحميل ملف الموسيقى mp3 ووضعه بجانب الملفات لضمان عمله أوفلاين
-const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './manifest.json',
-    './logo.png',
-    './intro.png',
-    // لو حملت الموسيقى عندك غير الرابط ده لـ ./music.mp3
-    'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'
+const CACHE_NAME = 'xotaro-v6';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  'https://i.ibb.co/Y4xSMSb3/logo.png',
+  'https://i.ibb.co/vx3Ddy6y/intro.jpg',
+  'https://cdn.pixabay.com/download/audio/2022/02/07/audio_13a3627063.mp3?filename=soft-piano-10723.mp3'
 ];
 
-// تنصيب الكاش
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.log('Opened cache');
-                return cache.addAll(ASSETS_TO_CACHE);
-            })
-    );
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
 });
 
-// تفعيل الكاش وتنظيف القديم
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
+self.addEventListener('activate', (e) => {
+  e.waitUntil(caches.keys().then((keys) => {
+    return Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)));
+  }));
 });
 
-// جلب الملفات (أوفلاين فيرست)
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                // لو الملف موجود في الكاش رجعه، لو لأ هاته من النت
-                return response || fetch(event.request);
-            })
-    );
+self.addEventListener('fetch', (e) => {
+  e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
 });
