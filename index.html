@@ -3,273 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XOTARO TEAM | Software Development</title>
+    <title>XOTARO TEAM</title>
     
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.png">
     <meta name="theme-color" content="#000000">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. GENERAL RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background-color: #000; color: #fff; overflow-x: hidden; }
+        /* --- 1. RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: #000; color: #fff; overflow-x: hidden; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Arabic Mode Class */
+        body.rtl { direction: rtl; font-family: 'Tajawal', sans-serif; }
+        
         html { scroll-behavior: smooth; }
+        
+        /* منع خروج النصوص */
+        h1, h2, h3, p { word-wrap: break-word; overflow-wrap: break-word; text-align: center; }
 
-        /* --- 2. LOADER SCREEN --- */
+        /* --- 2. LOADER (FORCED) --- */
         #loader-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background-color: #000; z-index: 99999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
         
         .loader-frame {
-            position: relative; width: 85%; max-width: 600px; aspect-ratio: 16/9;
-            border: 1px solid #333; border-radius: 12px; background: #050505;
-            display: flex; justify-content: center; align-items: center; overflow: hidden;
-            box-shadow: 0 0 40px rgba(255,255,255,0.05); margin-bottom: 30px;
-        }
-        
-        /* الصورة المحلية */
-        #intro-img-loader { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 1s; }
-        
-        .loading-meta { width: 80%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; }
-        .loading-txt { font-size: 0.9rem; letter-spacing: 3px; color: #888; text-align: center; }
-        .progress-container { width: 100%; height: 4px; background: #222; border-radius: 2px; overflow: hidden; display: flex; }
-        .progress-bar { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 15px #fff; transition: width 0.1s linear; }
-        .percent { color: #fff; font-weight: bold; font-size: 0.9rem; text-align: right; min-width: 40px; }
-
-        /* --- 3. HEADER & CONTROLS --- */
-        header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 40px; z-index: 10000;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            transform: translateY(-100%); transition: transform 0.8s ease-out;
-            overflow: hidden;
-        }
-        header.visible { transform: translateY(0); }
-        
-        .header-bg-image {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; opacity: 0.1; z-index: -1; pointer-events: none;
-        }
-
-        .logo-box { display: flex; align-items: center; gap: 12px; }
-        /* اللوجو المحلي */
-        .logo-header { width: 45px; height: 45px; object-fit: contain; }
-        .brand { font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; }
-
-        nav ul { display: flex; list-style: none; gap: 20px; }
-        nav a { color: #ccc; text-decoration: none; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; transition: 0.3s; }
-        nav a:hover { color: #fff; text-shadow: 0 0 10px #fff; }
-
-        .controls { display: flex; gap: 15px; align-items: center; }
-        .icon-btn {
-            background: transparent; border: 1px solid #444; color: #fff;
-            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; transition: 0.3s;
-        }
-        .icon-btn:hover { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        
-        /* زر التثبيت - مخفي افتراضياً */
-        #pwa-install-btn { display: none; border-color: #1877f2; color: #1877f2; }
-        #pwa-install-btn:hover { background: #1877f2; color: #fff; box-shadow: 0 0 20px #1877f2; }
-
-        /* --- 4. FLOATING QUICK ACCESS --- */
-        #quick-access-fab {
-            position: fixed; bottom: 30px; right: 30px; z-index: 9990;
-            width: 50px; height: 50px; border-radius: 50%;
-            background: #1877f2; color: #fff; border: none;
+            width: 80%; max-width: 400px; aspect-ratio: 16/9;
+            border: 1px solid #333; border-radius: 10px;
             display: flex; justify-content: center; align-items: center;
-            font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s, opacity 0.3s; opacity: 0; pointer-events: none;
+            background: #050505; margin-bottom: 20px; overflow: hidden;
         }
-        #quick-access-fab.visible { opacity: 1; pointer-events: auto; }
-        #quick-access-fab:hover { transform: scale(1.1); }
-        #quick-access-fab.active { transform: rotate(45deg); }
+        #intro-img-loader { width: 100%; height: 100%; object-fit: cover; }
 
-        #quick-access-menu {
-            position: fixed; bottom: 90px; right: 30px; z-index: 9989;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
-            border: 1px solid #333; border-radius: 10px; padding: 15px;
-            display: flex; flex-direction: column; gap: 10px;
-            transition: transform 0.3s, opacity 0.3s;
-            transform: translateY(20px); opacity: 0; pointer-events: none;
-        }
-        #quick-access-menu.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
-        #quick-access-menu a {
-            color: #ccc; text-decoration: none; font-size: 0.9rem; font-weight: 600;
-            padding: 8px 12px; border-radius: 5px; transition: 0.2s; display: block; text-align: right;
-        }
-        #quick-access-menu a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .loading-info { width: 80%; max-width: 400px; }
+        .progress-track { width: 100%; height: 4px; background: #222; border-radius: 2px; }
+        .progress-bar { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; transition: width 0.1s linear; }
+        .progress-percent { text-align: center; margin-top: 5px; font-size: 0.8rem; color: #888; }
 
-        /* --- 5. MAIN CONTENT --- */
-        #main-site { opacity: 0; transition: opacity 1.5s ease; }
-        .container { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
+        /* --- 3. MAIN SITE --- */
+        #main-site { display: none; opacity: 0; transition: opacity 1s ease; }
+        
+        /* Header */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; z-index: 1000;
+            background: rgba(0,0,0,0.95); border-bottom: 1px solid #222;
+        }
+        
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .header-logo { width: 35px; height: 35px; object-fit: contain; }
+        .brand { font-weight: 900; font-size: 1.1rem; }
+
+        .controls { display: flex; gap: 10px; align-items: center; }
+        .icon-btn {
+            background: transparent; border: 1px solid #333; color: #fff;
+            width: 35px; height: 35px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        /* Language Btn */
+        .lang-btn { font-weight: bold; font-family: sans-serif; font-size: 0.8rem; width: auto; padding: 0 10px; border-radius: 20px; }
+
+        /* Install Btn (Center Highlight) */
+        #install-btn { 
+            border-color: #1877f2; color: #1877f2; display: none; /* يظهر بالجافاسكريبت */
+        } 
 
         /* Hero */
-        .hero { height: 100vh; display: flex; align-items: center; background: radial-gradient(circle at 50% 50%, #151515 0%, #000 90%); text-align: center; }
-        .hero-content { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .hero-text { max-width: 800px; }
-        .hero h1 { font-size: 4rem; text-transform: uppercase; margin-bottom: 20px; line-height: 1.1; }
-        .hero p { color: #888; font-size: 1.1rem; margin-bottom: 30px; }
-        .btn-main { padding: 15px 40px; background: transparent; border: 2px solid #fff; color: #fff; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
-        .btn-main:hover { background: #fff; color: #000; box-shadow: 0 0 30px #fff; }
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
+            padding: 100px 20px;
+            background: radial-gradient(circle, #151515 0%, #000 100%);
+        }
+        .hero h1 { font-size: 2.2rem; text-transform: uppercase; margin-bottom: 15px; line-height: 1.2; }
+        .hero p { color: #aaa; max-width: 600px; margin-bottom: 30px; font-size: 0.95rem; }
+        
+        .btn-main {
+            padding: 12px 30px; background: transparent; border: 2px solid #fff; color: #fff;
+            font-weight: bold; text-transform: uppercase; cursor: pointer; letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .btn-main:hover { background: #fff; color: #000; }
 
         /* Sections */
-        section { padding: 100px 0; border-bottom: 1px solid #111; }
-        .sec-head { margin-bottom: 50px; text-align: center; }
-        .sec-head h2 { font-size: 2.5rem; text-transform: uppercase; }
-        .sec-head p { color: #666; font-size: 1rem; max-width: 700px; margin: 0 auto; }
+        section { padding: 60px 20px; border-bottom: 1px solid #111; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .sec-title { font-size: 1.8rem; margin-bottom: 30px; text-transform: uppercase; text-align: center; color: #fff; }
 
-        .split-layout { display: flex; gap: 50px; align-items: center; }
-        .split-left { flex: 0.4; }
-        .split-right { flex: 0.6; }
-
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
-        .card { background: #080808; border: 1px solid #222; padding: 30px; transition: 0.3s; text-align: center; }
-        .card:hover { border-color: #fff; transform: translateY(-5px); }
-        .card h3 { font-size: 1.2rem; margin-bottom: 10px; }
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: #080808; border: 1px solid #222; padding: 25px; text-align: center; border-radius: 8px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 10px; color: #fff; }
         .card p { color: #888; font-size: 0.9rem; }
 
-        .dev-zone { background: #050505; border: 1px solid #222; padding: 60px; text-align: center; }
-        .gear { font-size: 4rem; margin-bottom: 20px; animation: spin 4s linear infinite; }
+        /* Dev Zone */
+        .dev-box { background: #080808; padding: 40px 20px; text-align: center; border: 1px solid #222; border-radius: 10px; }
+        .gear-spin { font-size: 3rem; margin-bottom: 20px; animation: spin 4s infinite linear; color: #555; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .member { background: #000; border: 1px solid #333; padding: 40px; text-align: center; transition: 0.3s; }
-        .member:hover { border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
-        .member h3 { margin-bottom: 5px; }
-        .member p { color: #666; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-
         /* Footer */
-        footer { position: relative; padding: 80px 0 0; background: #000; overflow: hidden; }
+        footer { padding: 60px 20px 20px; background: #000; text-align: center; position: relative; overflow: hidden; }
         .footer-bg {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            height: 80vh; width: auto; aspect-ratio: 9/16; object-fit: cover;
-            opacity: 0.2; z-index: 0; pointer-events: none;
-            mask-image: linear-gradient(to top, black, transparent);
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            height: 100%; width: 100%; object-fit: cover; opacity: 0.1; z-index: 0;
         }
-        .footer-content { position: relative; z-index: 2; padding-bottom: 40px; text-align: center; }
-        .f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-bottom: 60px; }
-        .f-col h4 { margin-bottom: 20px; text-transform: uppercase; }
-        .f-col p, .f-col a { color: #777; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; transition: 0.3s; }
-        .f-col a:hover { color: #fff; padding-left: 5px; }
-        
-        .social-fb {
-            display: inline-flex; align-items: center; gap: 10px; padding: 12px 30px;
-            border: 1px solid #1877f2; color: #fff; border-radius: 4px; background: rgba(24, 119, 242, 0.1);
+        .footer-content { position: relative; z-index: 2; }
+        .social-btn {
+            display: inline-block; padding: 10px 25px; background: #1877f2; color: #fff;
+            text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0;
         }
-        .social-fb:hover { background: #1877f2; box-shadow: 0 0 20px #1877f2; }
-        .copyright { text-align: center; padding: 20px; border-top: 1px solid #111; color: #444; font-size: 0.8rem; position: relative; z-index: 2; }
+        .copy { color: #444; font-size: 0.8rem; margin-top: 30px; }
 
-        @media (max-width: 900px) {
-            .split-layout, .f-grid { flex-direction: column; grid-template-columns: 1fr; }
-            .grid-2 { grid-template-columns: 1fr; }
-            header { padding: 15px 20px; }
-            nav ul { display: none; }
-            .hero h1 { font-size: 2.8rem; }
-            .container { padding: 0 20px; }
-        }
-
-        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
     </style>
 </head>
-<body>
+<body data-lang="en">
 
     <audio id="bg-music" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_13a3627063.mp3?filename=soft-piano-10723.mp3" type="audio/mpeg">
     </audio>
 
     <div id="loader-screen">
         <div class="loader-frame">
-            <img src="intro.png" alt="Intro" id="intro-img-loader" onload="this.style.opacity='1'">
+            <img src="https://i.ibb.co/vx3Ddy6y/intro.jpg" id="intro-img-loader" alt="Loading">
         </div>
-        <div class="loading-meta">
-            <div class="loading-txt">INITIALIZING SYSTEM...</div>
-            <div class="progress-container">
+        <div class="loading-info">
+            <div class="progress-track">
                 <div class="progress-bar" id="bar"></div>
             </div>
-            <div class="percent" id="percent-txt">0%</div>
+            <div class="progress-percent" id="percent">0%</div>
         </div>
-    </div>
-
-    <header id="main-header">
-        <img src="intro.png" alt="" class="header-bg-image">
-        
-        <div class="logo-box">
-            <img src="logo.png" alt="X" class="logo-header">
-            <span class="brand">XOTARO</span>
-        </div>
-        
-        <nav>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Work</a></li>
-                <li><a href="#team">Team</a></li>
-            </ul>
-        </nav>
-
-        <div class="controls">
-            <button class="icon-btn" id="pwa-install-btn" title="Install App">
-                <i class="fas fa-download"></i>
-            </button>
-            
-            <button class="icon-btn" id="music-btn" onclick="toggleMusic()">
-                <i class="fas fa-volume-mute"></i>
-            </button>
-        </div>
-    </header>
-
-    <button id="quick-access-fab" onclick="toggleQuickAccess()">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div id="quick-access-menu">
-        <a href="#hero" onclick="toggleQuickAccess()">Home</a>
-        <a href="#about" onclick="toggleQuickAccess()">About Us</a>
-        <a href="#projects" onclick="toggleQuickAccess()">Our Work</a>
-        <a href="#team" onclick="toggleQuickAccess()">The Team</a>
-        <a href="#footer" onclick="toggleQuickAccess()">Contact</a>
     </div>
 
     <div id="main-site">
-        <section class="hero" id="hero">
+        <header>
+            <div class="logo-area">
+                <img src="https://i.ibb.co/Y4xSMSb3/logo.png" class="header-logo" alt="X">
+                <span class="brand">XOTARO</span>
+            </div>
+            
+            <div class="controls">
+                <button class="icon-btn" id="install-btn" onclick="installApp()">
+                    <i class="fas fa-download"></i>
+                </button>
+                
+                <button class="icon-btn lang-btn" onclick="toggleLang()">AR</button>
+                
+                <button class="icon-btn" id="music-btn" onclick="toggleMusic()">
+                    <i class="fas fa-volume-mute"></i>
+                </button>
+            </div>
+        </header>
+
+        <section class="hero">
             <div class="container">
-                <div class="hero-content reveal">
-                    <div class="hero-text">
-                        <h1>We Engineer<br>Digital Legacies</h1>
-                        <p>XOTARO TEAM: Architects of the virtual world. Blending cutting-edge code with artistic vision to create software that defines the future.</p>
-                        <button class="btn-main" onclick="document.getElementById('projects').scrollIntoView()">Explore Universe</button>
-                    </div>
-                </div>
+                <h1 id="txt-hero-title">WE ENGINEER<br>DIGITAL LEGACIES</h1>
+                <p id="txt-hero-desc">XOTARO TEAM: Architects of the virtual world. Blending code with art.</p>
+                <button class="btn-main" id="txt-hero-btn">EXPLORE UNIVERSE</button>
             </div>
         </section>
 
         <section id="about">
             <div class="container">
-                <div class="split-layout">
-                    <div class="split-left reveal">
-                        <div class="sec-head">
-                            <h2>Who We Are</h2>
-                            <p>Driven by passion, defined by code. We are a collective of innovators dedicated to pushing the boundaries of what's possible on the web.</p>
-                        </div>
+                <h2 class="sec-title" id="txt-about-title">WHO WE ARE</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 id="txt-philosophy-title">Philosophy</h3>
+                        <p id="txt-philosophy-desc">Clean Code & Agile Methodologies. Optimized for performance and security.</p>
                     </div>
-                    <div class="split-right reveal">
-                        <div class="grid-2">
-                            <div class="card">
-                                <h3>Philosophy</h3>
-                                <p>We believe in "Clean Code" and "Agile Methodologies." Every line we write is optimized for performance and security.</p>
-                            </div>
-                            <div class="card">
-                                <h3>Tech Stack</h3>
-                                <p>From complex Backend architectures to stunning Frontend interfaces. We master the full stack.</p>
-                            </div>
-                        </div>
+                    <div class="card">
+                        <h3 id="txt-tech-title">Tech Stack</h3>
+                        <p id="txt-tech-desc">Complex Backend architectures & stunning Frontend interfaces.</p>
                     </div>
                 </div>
             </div>
@@ -277,118 +191,153 @@
 
         <section id="projects">
             <div class="container">
-                <div class="split-layout">
-                    <div class="split-left reveal">
-                        <div class="sec-head">
-                            <h2>Our Work</h2>
-                            <p>Where innovation meets execution. We take pride in delivering high-quality projects.</p>
-                        </div>
-                    </div>
-                    <div class="split-right reveal">
-                        <div class="dev-zone">
-                            <i class="fas fa-cog gear"></i>
-                            <h3>SYSTEM UNDER DEVELOPMENT...</h3>
-                            <p style="color: #666; margin-top: 10px;">Our team is currently crafting the next generation of software tools. Stay tuned.</p>
-                        </div>
-                    </div>
+                <h2 class="sec-title" id="txt-work-title">OUR WORK</h2>
+                <div class="dev-box">
+                    <i class="fas fa-cog gear-spin"></i>
+                    <h3 id="txt-dev-title">SYSTEM UNDER DEVELOPMENT...</h3>
+                    <p id="txt-dev-desc">Crafting the next generation tools. Stay tuned.</p>
                 </div>
             </div>
         </section>
 
         <section id="team">
             <div class="container">
-                <div class="split-layout">
-                    <div class="split-left reveal">
-                        <div class="sec-head">
-                            <h2>The Elite</h2>
-                            <p>Meet the minds behind the magic. Our team is composed of highly skilled and passionate individuals.</p>
-                        </div>
+                <h2 class="sec-title" id="txt-team-title">THE ELITE</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Mohamed M.Hamdy</h3>
+                        <p id="txt-role-1">Team Leader & Backend</p>
                     </div>
-                    <div class="split-right reveal">
-                        <div class="grid-2">
-                            <div class="member">
-                                <h3>Mohamed M.Hamdy</h3>
-                                <p>Team Leader & Backend Architect</p>
-                            </div>
-                            <div class="member">
-                                <h3>Yassin El.shereef</h3>
-                                <p>Frontend Developer</p>
-                            </div>
-                        </div>
+                    <div class="card">
+                        <h3>Yassin El.shereef</h3>
+                        <p id="txt-role-2">Frontend Developer</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer id="footer">
-            <img src="intro.png" alt="" class="footer-bg">
-            <div class="container footer-content">
-                <div class="f-grid">
-                    <div class="f-col">
-                        <h4>XOTARO</h4>
-                        <p>Premier software development collective dedicated to pushing the boundaries.</p>
-                    </div>
-                    <div class="f-col">
-                        <h4>Quick Links</h4>
-                        <a href="#about">Our Story</a>
-                        <a href="#projects">Portfolio</a>
-                        <a href="#team">Careers</a>
-                    </div>
-                    <div class="f-col">
-                        <h4>Connect</h4>
-                        <p>Follow our latest updates.</p>
-                        <a href="https://www.facebook.com/share/17U1FC281u/" target="_blank" class="social-fb">
-                            <i class="fab fa-facebook-f"></i> LIKE OUR PAGE
-                        </a>
-                    </div>
-                </div>
+        <footer>
+            <img src="https://i.ibb.co/vx3Ddy6y/intro.jpg" class="footer-bg" alt="">
+            <div class="footer-content">
+                <h3 id="txt-footer-title">CONNECT WITH US</h3>
+                <p style="margin: 10px 0;" id="txt-footer-desc">Ready to start your next project?</p>
+                <a href="https://www.facebook.com/share/17U1FC281u/" target="_blank" class="social-btn">
+                    <i class="fab fa-facebook-f"></i> FACEBOOK
+                </a>
+                <div class="copy">&copy; 2025 XOTARO TEAM.</div>
             </div>
-            <div class="copyright">&copy; <span id="year"></span> XOTARO TEAM. All Rights Reserved.</div>
         </footer>
     </div>
 
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+        // --- TRANSLATIONS ---
+        const translations = {
+            en: {
+                heroTitle: "WE ENGINEER<br>DIGITAL LEGACIES",
+                heroDesc: "XOTARO TEAM: Architects of the virtual world. Blending code with art.",
+                heroBtn: "EXPLORE UNIVERSE",
+                aboutTitle: "WHO WE ARE",
+                philTitle: "Philosophy",
+                philDesc: "Clean Code & Agile Methodologies. Optimized for performance and security.",
+                techTitle: "Tech Stack",
+                techDesc: "Complex Backend architectures & stunning Frontend interfaces.",
+                workTitle: "OUR WORK",
+                devTitle: "SYSTEM UNDER DEVELOPMENT...",
+                devDesc: "Crafting the next generation tools. Stay tuned.",
+                teamTitle: "THE ELITE",
+                role1: "Team Leader & Backend",
+                role2: "Frontend Developer",
+                footerTitle: "CONNECT WITH US",
+                footerDesc: "Ready to start your next project?"
+            },
+            ar: {
+                heroTitle: "نحن نهندس<br>الإرث الرقمي",
+                heroDesc: "فريق XOTARO: مهندسو العالم الافتراضي. نمزج الكود بالفن.",
+                heroBtn: "استكشف العالم",
+                aboutTitle: "من نحن",
+                philTitle: "فلسفتنا",
+                philDesc: "كود نظيف ومنهجيات رشيقة. تحسين الأداء والأمان.",
+                techTitle: "التقنيات",
+                techDesc: "هيكلة خلفية معقدة وواجهات أمامية مذهلة.",
+                workTitle: "أعمالنا",
+                devTitle: "النظام قيد التطوير...",
+                devDesc: "نقوم بصياغة أدوات الجيل القادم. ترقبونا.",
+                teamTitle: "النخبة",
+                role1: "قائد الفريق ومطور Backend",
+                role2: "مطور Frontend",
+                footerTitle: "تواصل معنا",
+                footerDesc: "جاهز لبدء مشروعك القادم؟"
+            }
+        };
 
-        // --- Loader Logic ---
+        // --- LANGUAGE TOGGLE ---
+        let currentLang = 'en';
+        function toggleLang() {
+            const body = document.body;
+            const btn = document.querySelector('.lang-btn');
+            
+            if (currentLang === 'en') {
+                currentLang = 'ar';
+                body.classList.add('rtl');
+                btn.innerText = 'EN';
+                applyLang('ar');
+            } else {
+                currentLang = 'en';
+                body.classList.remove('rtl');
+                btn.innerText = 'AR';
+                applyLang('en');
+            }
+        }
+
+        function applyLang(lang) {
+            const t = translations[lang];
+            document.getElementById('txt-hero-title').innerHTML = t.heroTitle;
+            document.getElementById('txt-hero-desc').innerText = t.heroDesc;
+            document.getElementById('txt-hero-btn').innerText = t.heroBtn;
+            document.getElementById('txt-about-title').innerText = t.aboutTitle;
+            document.getElementById('txt-philosophy-title').innerText = t.philTitle;
+            document.getElementById('txt-philosophy-desc').innerText = t.philDesc;
+            document.getElementById('txt-tech-title').innerText = t.techTitle;
+            document.getElementById('txt-tech-desc').innerText = t.techDesc;
+            document.getElementById('txt-work-title').innerText = t.workTitle;
+            document.getElementById('txt-dev-title').innerText = t.devTitle;
+            document.getElementById('txt-dev-desc').innerText = t.devDesc;
+            document.getElementById('txt-team-title').innerText = t.teamTitle;
+            document.getElementById('txt-role-1').innerText = t.role1;
+            document.getElementById('txt-role-2').innerText = t.role2;
+            document.getElementById('txt-footer-title').innerText = t.footerTitle;
+            document.getElementById('txt-footer-desc').innerText = t.footerDesc;
+        }
+
+        // --- LOADER ---
         const loaderScreen = document.getElementById('loader-screen');
         const mainSite = document.getElementById('main-site');
-        const header = document.getElementById('main-header');
         const bar = document.getElementById('bar');
-        const percentTxt = document.getElementById('percent-txt');
-        const fab = document.getElementById('quick-access-fab');
-
-        let duration = 15000;
-        try {
-            if(localStorage.getItem('visited')) duration = 5000;
-            localStorage.setItem('visited', 'true');
-        } catch(e){}
-
+        const percentTxt = document.getElementById('percent');
+        
         let width = 0;
-        let step = 100 / (duration / 50); 
-
         const timer = setInterval(() => {
-            width += step;
             if (width >= 100) {
-                width = 100;
                 clearInterval(timer);
                 openSite();
+            } else {
+                width++;
+                bar.style.width = width + '%';
+                percentTxt.innerText = width + '%';
             }
-            bar.style.width = width + '%';
-            percentTxt.innerText = Math.floor(width) + '%';
-        }, 50);
+        }, 30); // أسرع قليلاً (3 ثواني)
 
         function openSite() {
-            loaderScreen.style.transform = 'translateY(-100%)';
+            loaderScreen.style.opacity = '0';
+            loaderScreen.style.visibility = 'hidden';
             mainSite.style.display = 'block';
             setTimeout(() => {
                 mainSite.style.opacity = '1';
-                header.classList.add('visible');
                 toggleMusic(true);
-            }, 500);
+            }, 100);
         }
 
-        // --- Music Logic ---
+        // --- MUSIC ---
         const music = document.getElementById('bg-music');
         const musicBtn = document.getElementById('music-btn');
         let isPlaying = false;
@@ -399,7 +348,7 @@
                     isPlaying = true;
                     musicBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
                     musicBtn.style.borderColor = '#fff';
-                }).catch(() => console.log("Autoplay blocked"));
+                }).catch(() => {});
             } else {
                 if (isPlaying) {
                     music.pause();
@@ -412,9 +361,39 @@
             }
         }
 
-        // --- Floating Menu ---
-        const quickAccessMenu = document.getElementById('quick-access-menu');
-        function toggleQuickAccess() {
-            fab.classList.toggle('active');
-            quickAccessMenu.classList.toggle('active');
-            fab.innerHTML = fab.classList.contains('
+        // --- PWA SIMULATION ---
+        function installApp() {
+            const btn = document.getElementById('install-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            setTimeout(() => {
+                btn.style.display = 'none';
+                alert("App Installed (Simulation)");
+            }, 2000);
+        }
+
+        // --- PWA REAL ---
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex'; // يظهر فقط لو متاح
+        });
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            } else {
+                installApp(); // Fallback to simulation
+            }
+        });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
+    </script>
+</body>
+    </html>
+    
